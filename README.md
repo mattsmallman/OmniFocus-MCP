@@ -1,5 +1,7 @@
 # OmniFocus MCP Server
 
+> **Note**: This is a fork of [themotionmachine/OmniFocus-MCP](https://github.com/themotionmachine/OmniFocus-MCP) with additional features and enhancements. Changes are being contributed back upstream via pull requests. If you want to use these features now before they're merged, see the [installation instructions](#installing-this-fork) below.
+
 A Model Context Protocol (MCP) server that integrates with OmniFocus to enable Claude (or other MCP-compatible clients) to interact with your tasks and projects.
 
 ![OmniFocus MCP](assets/omnifocus-mcp-logo.png)
@@ -7,7 +9,7 @@ A Model Context Protocol (MCP) server that integrates with OmniFocus to enable C
 ## Overview
 
 This MCP server creates a bridge between AI assistants (like Claude) and your OmniFocus task management system. It gives AI models the ability to view, create, edit, and remove tasks and projects in your OmniFocus database through natural language conversations.
-Some ways you could use it: 
+Some ways you could use it:
 
 - Translate the PDF of a syllabus into a fully specificed project with tasks, tags, defer dates, and due dates.
 - Turn a meeting transcript into a list of actions
@@ -15,14 +17,36 @@ Some ways you could use it:
 - Process multiple tasks or projects in a single operation
 - Bulk manage your OmniFocus items efficiently
 
+## What's New in This Fork
+
+This fork includes several enhancements over the upstream version:
+
+### Architecture Improvements
+- **Migrated from AppleScript to OmniJS**: Faster, more reliable automation with better error handling and maintainability
+- **Enhanced tool descriptions**: More detailed guidance for AI models to use tools effectively
+
+### New Features
+- **MCP Resources**: Automatic context generation for folders, projects, tasks, and inbox with hierarchical navigation
+- **Folder Management**: Create, edit, and remove folders with `add_folder`, `edit_folder`, and `remove_folder` tools
+- **Task Movement**: New `move_task` and `batch_move_task` tools for reorganizing tasks efficiently
+- **Batch Operations**: `batch_edit_items` for high-performance bulk editing (10-45x faster than sequential edits)
+- **Review Management**: Set review intervals and mark projects as reviewed
+- **Planned Date Support**: Full support for OmniFocus 4.7's new planned date feature
+
+### Performance
+- Batch operations provide significant speedups: ~230ms for batch vs 2.26s for 10 sequential operations
+
 **Known Issues**
-- Dump_database tool currently fails for very large omnifocus databases. 
+- Dump_database tool currently fails for very large omnifocus databases.
 
 ## Roadmap
 - ~~Enable the client to interact with perspectives~~ ✅ (Added list_perspectives and get_perspective_view)
 - ~~Add support for the new `planned` date type in Omnifocus 4.7~~ ✅ (Added plannedDate support for tasks)
-- Benefit from MCP `resource` and `prompt` features
+- ~~Migrate from AppleScript to OmniJS~~ ✅ (Completed)
+- ~~Add folder management capabilities~~ ✅ (Added add_folder, edit_folder, remove_folder)
+- ~~Implement MCP resource features~~ ✅ (Added resource generation for better context)
 - Support manipulating notifications for projects and tasks
+- Enhance perspective integration
 
 
 ## 🚀 Quick Start
@@ -30,7 +54,7 @@ Some ways you could use it:
 ### Prerequisites
 - macOS with OmniFocus installed
 
-### Connecting to Claude
+### Installing the Original Version
 
 1. In Claude Desktop, add this MCP server to your configuration file at:
 ```
@@ -50,6 +74,34 @@ Some ways you could use it:
 ```
 
 3. Restart Claude Desktop
+
+### Installing This Fork
+
+To use the enhanced features in this fork before they're merged upstream:
+
+1. Edit your Claude Desktop configuration file at:
+```
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+2. Add this configuration to use the fork directly from GitHub:
+```json
+{
+  "mcpServers": {
+    "omnifocus": {
+      "command": "npx",
+      "args": ["-y", "github:mattsmallman/OmniFocus-MCP"]
+    }
+  }
+}
+```
+
+3. Restart Claude Desktop
+
+**Note**: You can also specify a specific branch if needed:
+```json
+"args": ["-y", "github:mattsmallman/OmniFocus-MCP#add-planned-date-support"]
+```
 
 ## Use Cases
 
